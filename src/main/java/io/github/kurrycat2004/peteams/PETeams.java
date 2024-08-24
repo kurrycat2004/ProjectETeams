@@ -1,7 +1,6 @@
 package io.github.kurrycat2004.peteams;
 
-import io.github.kurrycat2004.peteams.event.ClientEvent;
-import io.github.kurrycat2004.peteams.event.ServerEvent;
+import io.github.kurrycat2004.peteams.event.Event;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
@@ -43,8 +42,6 @@ public class PETeams {
         PETeams.LOGGER.info("init");
 
         PETeams.debugLog("registering server side event busses");
-        MinecraftForge.EVENT_BUS.register(new ServerEvent());
-        PETeams.debugLog("registering server side event busses");
-        MinecraftForge.EVENT_BUS.register(new ClientEvent());
+        MinecraftForge.EVENT_BUS.register(new Event());
     }
 }
