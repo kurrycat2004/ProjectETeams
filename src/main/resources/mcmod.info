@@ -1,0 +1,12 @@
+[{
+    "modid": "${modid}",
+    "name": "${modname}",
+    "description": "A mod that links EMC networks of players in the same FTB Team together",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "logoFile": "",
+    "url": "",
+    "authorList": [],
+    "credits": "",
+    "dependencies": ["projecte", "ftblib"]
+}]
