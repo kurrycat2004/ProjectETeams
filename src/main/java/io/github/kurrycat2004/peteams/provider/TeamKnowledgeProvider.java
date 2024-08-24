@@ -9,13 +9,11 @@ import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.event.PlayerKnowledgeChangeEvent;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.container.TransmutationContainer;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.KnowledgeSyncPKT;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -26,7 +24,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -312,15 +309,6 @@ public class TeamKnowledgeProvider implements IKnowledgeProvider {
 
         CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.readNBT(inputLocks, null, properties.getTagList("inputlock", Constants.NBT.TAG_COMPOUND));
         this.fullKnowledge = properties.getBoolean("fullknowledge");
-    }
-
-    public static void updateClientTransmutation() {
-        if (!FMLCommonHandler.instance().getEffectiveSide().isClient()) return;
-
-        EntityPlayer player = Minecraft.getMinecraft().player;
-        if (player == null) return;
-        if (!(player.openContainer instanceof TransmutationContainer container)) return;
-        container.transmutationInventory.updateClientTargets();
     }
 
     public static void pruneDuplicateKnowledge(List<ItemStack> knowledge) {

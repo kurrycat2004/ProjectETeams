@@ -40,4 +40,9 @@
 dependencies {
     implementation rfg.deobf("curse.maven:projecte-226410:2702991")
     implementation rfg.deobf("curse.maven:ftblib-237167:2985811")
+
+    compileOnly rfg.deobf("curse.maven:projectex-311378:3014173")
+    if (debug_projectex) {
+        runtimeOnly rfg.deobf("curse.maven:projectex-311378:3014173")
+    }
 }

@@ -16,12 +16,17 @@ import org.apache.logging.log4j.Logger;
         version = Tags.VERSION,
         name = Tags.MODNAME,
         acceptedMinecraftVersions = "[1.12.2]",
-        dependencies = "required-after:forge@[14.23.5.2768,);required-after:projecte@[1.12.2-PE1.4.1,);required-after:ftblib@[5.4.0,);"
+        dependencies = "required-after:forge@[14.23.5.2768,);" +
+                       "required-after:projecte@[1.12.2-PE1.4.1,);" +
+                       "required-after:ftblib@[5.4.0,);" +
+                       "after:projectex;"
         //serverSideOnly = true
 )
 public class PETeams {
     public static final Logger LOGGER = LogManager.getLogger(Tags.MODID);
     public static boolean DEV_ENV = false;
+
+    public static final String PROJECT_EX = "projectex";
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {

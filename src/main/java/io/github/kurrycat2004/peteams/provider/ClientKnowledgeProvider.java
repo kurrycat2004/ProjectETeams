@@ -1,5 +1,6 @@
 package io.github.kurrycat2004.peteams.provider;
 
+import io.github.kurrycat2004.peteams.gui.GuiSync;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -87,7 +88,7 @@ public class ClientKnowledgeProvider implements IKnowledgeProvider {
         if (resetCache) this.knowledge.clearKnowledge();
 
         this.knowledge.deserializeNBT(nbt);
-        TeamKnowledgeProvider.updateClientTransmutation();
+        GuiSync.updateClientTransmutation();
     }
 
     public static class Provider implements ICapabilitySerializable<NBTTagCompound> {
