@@ -1,5 +1,7 @@
-package io.github.kurrycat2004.peteams;
+package io.github.kurrycat2004.peteams.data;
 
+import io.github.kurrycat2004.peteams.PETeams;
+import io.github.kurrycat2004.peteams.Tags;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;

@@ -1,4 +1,4 @@
-package io.github.kurrycat2004.peteams;
+package io.github.kurrycat2004.peteams.provider;
 
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
@@ -14,10 +14,10 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nonnull;
 import java.util.List;
 
-public class ClientKnowledgeProviderWrapper implements IKnowledgeProvider {
+public class ClientKnowledgeProvider implements IKnowledgeProvider {
     private final IKnowledgeProvider knowledge;
 
-    public ClientKnowledgeProviderWrapper(IKnowledgeProvider knowledge) {
+    public ClientKnowledgeProvider(IKnowledgeProvider knowledge) {
         this.knowledge = knowledge;
     }
 
@@ -83,15 +83,18 @@ public class ClientKnowledgeProviderWrapper implements IKnowledgeProvider {
 
     @Override
     public void deserializeNBT(NBTTagCompound nbt) {
+        boolean resetCache = nbt.getBoolean("resetCache");
+        if (resetCache) this.knowledge.clearKnowledge();
+
         this.knowledge.deserializeNBT(nbt);
         TeamKnowledgeProvider.updateClientTransmutation();
     }
 
     public static class Provider implements ICapabilitySerializable<NBTTagCompound> {
-        private final ClientKnowledgeProviderWrapper knowledge;
+        private final ClientKnowledgeProvider knowledge;
 
         public Provider(IKnowledgeProvider oldProvider) {
-            this.knowledge = new ClientKnowledgeProviderWrapper(oldProvider);
+            this.knowledge = new ClientKnowledgeProvider(oldProvider);
         }
 
         public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {

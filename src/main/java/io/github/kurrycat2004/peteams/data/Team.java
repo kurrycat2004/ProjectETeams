@@ -1,7 +1,9 @@
-package io.github.kurrycat2004.peteams;
+package io.github.kurrycat2004.peteams.data;
 
 import com.feed_the_beast.ftblib.lib.data.ForgeTeam;
 import com.feed_the_beast.ftblib.lib.data.Universe;
+import io.github.kurrycat2004.peteams.PETeams;
+import io.github.kurrycat2004.peteams.provider.TeamKnowledgeProvider;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.utils.ItemHelper;
 import net.minecraft.item.ItemStack;
@@ -10,10 +12,12 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.common.util.Constants;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 public class Team extends WorldSavedData {
     private String uuid;
@@ -64,33 +68,34 @@ public class Team extends WorldSavedData {
         return view;
     }
 
-    public void clearKnowledge() {
+    public void clearKnowledge(@Nullable UUID playerUUID) {
         knowledge.clear();
         markDirty();
-        sync();
+        sync(playerUUID);
     }
 
-    public boolean removeKnowledge(ItemStack stack) {
+    public boolean removeKnowledge(@Nullable UUID playerUUID, ItemStack stack) {
         boolean removed = knowledge.removeIf(s -> ItemHelper.basicAreStacksEqual(stack, s));
         markDirty();
-        sync();
+        sync(playerUUID);
         return removed;
     }
 
-    public void update() {
+    public void update(@Nullable UUID playerUUID) {
         markDirty();
-        sync();
+        sync(playerUUID);
     }
 
-
-    //TODO: Don't send back to sender
-    private void sync() {
+    private void sync(@Nullable UUID playerUUID) {
         ForgeTeam forgeTeam = this.getTeam();
         if (forgeTeam == null) return;
         forgeTeam.getOnlineMembers().forEach(player -> {
+            if (player.getUniqueID().equals(playerUUID)) return;
             TeamKnowledgeProvider capability = (TeamKnowledgeProvider) player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null);
             if (capability == null) return;
-            capability.sync(player);
+
+            capability.knowledgeSyncTeam(this);
+            capability.sendKnowledgeSyncTeam(this, player);
         });
     }
 
@@ -102,10 +107,10 @@ public class Team extends WorldSavedData {
         TeamKnowledgeProvider.pruneStaleKnowledge(knowledge);
     }
 
-    public void addKnowledge(ItemStack stack) {
+    public void addKnowledge(@Nullable UUID playerUUID, ItemStack stack) {
         knowledge.add(stack);
         markDirty();
-        sync();
+        sync(playerUUID);
     }
 
     public void addKnowledgeRaw(ItemStack stack) {
@@ -116,20 +121,20 @@ public class Team extends WorldSavedData {
         return uuid;
     }
 
-    public void setEmc(long emc) {
+    public void setEmc(@Nullable UUID playerUUID, long emc) {
         this.emc = emc;
         markDirty();
-        sync();
+        sync(playerUUID);
     }
 
     public void setEmcRaw(long emc) {
         this.emc = emc;
     }
 
-    public void setFullKnowledge(boolean fullKnowledge) {
+    public void setFullKnowledge(@Nullable UUID playerUUID, boolean fullKnowledge) {
         this.fullKnowledge = fullKnowledge;
         markDirty();
-        sync();
+        sync(playerUUID);
     }
 
     public void setFullKnowledgeRaw(boolean fullKnowledge) {
