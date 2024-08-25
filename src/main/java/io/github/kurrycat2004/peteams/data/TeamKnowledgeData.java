@@ -15,9 +15,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TeamKnowledgeData extends WorldSavedData {
-    private final Map<String, Team> teams = new HashMap<>();
-
     private static final String ID = Tags.MODID + "_sync_knowledge";
+
+    private final Map<String, Team> teams = new HashMap<>();
 
     public TeamKnowledgeData(String name) {
         super(name);
@@ -40,6 +40,12 @@ public class TeamKnowledgeData extends WorldSavedData {
         return instance;
     }
 
+    /**
+     * This <strong>always</strong> returns a Team instance. If the team does not exist, it will be created.
+     *
+     * @param uuid Team UUID
+     * @return Team instance
+     */
     public Team getTeam(String uuid) {
         return teams.computeIfAbsent(uuid, Team::new);
     }

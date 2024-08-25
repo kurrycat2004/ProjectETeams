@@ -1,4 +1,4 @@
-package io.github.kurrycat2004.peteams.mixin;
+package io.github.kurrycat2004.peteams.mixin.forge;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;

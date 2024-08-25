@@ -4,6 +4,9 @@
   "minVersion": "0.8",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "BlockLinkMixin"
-  ]
+    "projectex.ContainerLinkMixin",
+    "projectex.BlockLinkMixin",
+    "projectex.PersonalEMCMixin"
+  ],
+  "verbose": true
 }

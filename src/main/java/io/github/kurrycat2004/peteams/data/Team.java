@@ -3,6 +3,7 @@ package io.github.kurrycat2004.peteams.data;
 import com.feed_the_beast.ftblib.lib.data.ForgeTeam;
 import com.feed_the_beast.ftblib.lib.data.Universe;
 import io.github.kurrycat2004.peteams.PETeams;
+import io.github.kurrycat2004.peteams.provider.OfflineKnowledgeProvider;
 import io.github.kurrycat2004.peteams.provider.TeamKnowledgeProvider;
 import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.utils.ItemHelper;
@@ -26,6 +27,8 @@ public class Team extends WorldSavedData {
     private final List<ItemStack> view = Collections.unmodifiableList(knowledge);
     private boolean fullKnowledge = false;
 
+    private OfflineKnowledgeProvider offlineProvider = null;
+
     public Team() {
         super("team");
     }
@@ -35,18 +38,10 @@ public class Team extends WorldSavedData {
         this.uuid = uuid;
     }
 
-    /*public void trySync() {
-        if (cachedEmc != emc) {
-            cachedEmc = emc;
-            ForgeTeam forgeTeam = this.getTeam();
-            if (forgeTeam == null) return;
-            forgeTeam.getOnlineMembers().forEach(player -> {
-                TeamKnowledgeProvider capability = (TeamKnowledgeProvider) player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null);
-                if (capability == null) return;
-                capability.sync(player);
-            });
-        }
-    }*/
+    public OfflineKnowledgeProvider getOfflineProvider() {
+        if (offlineProvider == null) offlineProvider = new OfflineKnowledgeProvider(this.uuid);
+        return offlineProvider;
+    }
 
     public ForgeTeam getTeam() {
         return Universe.get().getTeam(uuid);

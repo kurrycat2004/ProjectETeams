@@ -1,8 +1,7 @@
-package io.github.kurrycat2004.peteams.mixin;
+package io.github.kurrycat2004.peteams.mixin.projectex;
 
-import com.feed_the_beast.ftblib.lib.data.ForgePlayer;
-import com.feed_the_beast.ftblib.lib.data.Universe;
 import com.latmod.mods.projectex.block.BlockLink;
+import io.github.kurrycat2004.peteams.util.MixinUtil;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -16,10 +15,6 @@ public class BlockLinkMixin {
             at = @At(value = "INVOKE",
                     target = "Ljava/util/UUID;equals(Ljava/lang/Object;)Z"))
     private boolean redirectOwnerEquals(@NotNull UUID playerUUID, Object ownerUUID) {
-        if (playerUUID.equals(ownerUUID)) return true;
-        if (!Universe.loaded()) return false;
-        ForgePlayer forgeOwner = Universe.get().getPlayer((UUID) ownerUUID);
-        if (forgeOwner == null || !forgeOwner.hasTeam()) return false;
-        return forgeOwner.team.getOnlineMembers().stream().anyMatch(member -> member.getUniqueID().equals(playerUUID));
+        return MixinUtil.redirectOwnerEquals(playerUUID, ownerUUID);
     }
 }

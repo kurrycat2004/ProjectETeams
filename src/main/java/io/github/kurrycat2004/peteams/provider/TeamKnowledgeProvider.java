@@ -235,8 +235,12 @@ public class TeamKnowledgeProvider implements IKnowledgeProvider {
     }
 
     public void sendKnowledgeSyncTeam(@NotNull Team team, EntityPlayerMP player) {
+        sendKnowledgeSyncTeam(team, player, this.inputLocks);
+    }
+
+    public static void sendKnowledgeSyncTeam(@NotNull Team team, EntityPlayerMP player, IItemHandlerModifiable inputLocks) {
         PETeams.debugLog("Sending knowledge from team {} to {} ({})", team.getUuid(), player.getName(), player.getUniqueID());
-        KnowledgeSyncPKT packet = new KnowledgeSyncPKT(this.serializeNBTTeam(team));
+        KnowledgeSyncPKT packet = new KnowledgeSyncPKT(TeamKnowledgeProvider.serializeNBTTeam(team, inputLocks));
         PacketHandler.sendTo(packet, player);
     }
 
@@ -255,8 +259,8 @@ public class TeamKnowledgeProvider implements IKnowledgeProvider {
         team.update(null);
     }
 
-    public NBTTagCompound serializeNBTTeam(@NotNull Team team) {
-        NBTTagCompound result = serializeHelper(team.getEmc(), team.getKnowledge(), this.inputLocks, team.hasFullKnowledge());
+    public static NBTTagCompound serializeNBTTeam(@NotNull Team team, IItemHandlerModifiable inputLocks) {
+        NBTTagCompound result = serializeHelper(team.getEmc(), team.getKnowledge(), inputLocks, team.hasFullKnowledge());
         result.setBoolean("resetCache", true);
         return result;
     }
@@ -267,7 +271,7 @@ public class TeamKnowledgeProvider implements IKnowledgeProvider {
         return result;
     }
 
-    private @NotNull NBTTagCompound serializeHelper(long emc, @NotNull List<ItemStack> knowledge, IItemHandlerModifiable inputLocks, boolean fullKnowledge) {
+    private static @NotNull NBTTagCompound serializeHelper(long emc, @NotNull List<ItemStack> knowledge, IItemHandlerModifiable inputLocks, boolean fullKnowledge) {
         NBTTagCompound properties = new NBTTagCompound();
         properties.setLong("transmutationEmc", emc);
 

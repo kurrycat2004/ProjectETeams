@@ -3,7 +3,7 @@ package io.github.kurrycat2004.peteams.event;
 import com.feed_the_beast.ftblib.events.team.ForgeTeamPlayerJoinedEvent;
 import com.feed_the_beast.ftblib.events.team.ForgeTeamPlayerLeftEvent;
 import io.github.kurrycat2004.peteams.PETeams;
-import io.github.kurrycat2004.peteams.mixin.AttachCapabilitiesEventMixin;
+import io.github.kurrycat2004.peteams.mixin.forge.AttachCapabilitiesEventMixin;
 import io.github.kurrycat2004.peteams.provider.ClientKnowledgeProvider;
 import io.github.kurrycat2004.peteams.provider.TeamKnowledgeProvider;
 import moze_intel.projecte.api.ProjectEAPI;
