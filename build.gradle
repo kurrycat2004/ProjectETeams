@@ -373,7 +373,10 @@ minecraft {
         extraRunJvmArguments.addAll([
             '-Dmixin.hotSwap=true',
             '-Dmixin.checks.interfaces=true',
-            '-Dmixin.debug.export=true'
+            '-Dmixin.debug.export=true',
+            /*'-Dmixin.debug=true',
+            '-Dmixin.debug.verbose=true',
+            '-Dmixin.dumpTargetOnFailure=true',*/
         ])
     }
 
