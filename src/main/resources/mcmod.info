@@ -4,9 +4,9 @@
     "description": "A mod that links EMC networks of players in the same FTB Team together",
     "version": "${version}",
     "mcversion": "${mcversion}",
-    "logoFile": "",
-    "url": "",
-    "authorList": [],
+    "logoFile": "assets/peteams/logo.png",
+    "url": "https://github.com/kurrycat2004/ProjectETeams",
+    "authorList": ["kurrycat"],
     "credits": "",
     "dependencies": ["projecte", "ftblib"]
 }]
