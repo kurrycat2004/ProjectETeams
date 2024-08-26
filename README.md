@@ -22,4 +22,11 @@ If you wish to transfer your EMC to the team network after adding this mod, take
 
 -----
 
+### Cleanroom
+[Cleanroom](https://github.com/CleanroomMC/Cleanroom) is supported, but not tested as much as normal Forge. If you encounter any bugs, please open an issue. <br>
+Cleanroom has mixinbooter included automatically, so with it, it's not required. <br>
+Don't forget to add Fugue when using Cleanroom. <br>
+
+-----
+
 If you notice any issues or have suggestions for new features, feel free to open an issue.
