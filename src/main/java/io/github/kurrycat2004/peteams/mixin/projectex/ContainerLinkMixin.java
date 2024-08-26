@@ -17,4 +17,6 @@ public class ContainerLinkMixin {
     private boolean redirectOwnerEquals(@NotNull UUID playerUUID, Object ownerUUID) {
         return MixinUtil.redirectOwnerEquals(playerUUID, ownerUUID);
     }
+
+    //TODO: Add sync for ContainerLink output slots
 }

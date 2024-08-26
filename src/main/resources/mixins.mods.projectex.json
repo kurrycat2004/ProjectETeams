@@ -6,7 +6,6 @@
   "mixins": [
     "projectex.ContainerLinkMixin",
     "projectex.BlockLinkMixin",
-    "projectex.PersonalEMCMixin"
-  ],
-  "verbose": true
+    "projectex.OfflineKnowledgeProviderMixin"
+  ]
 }

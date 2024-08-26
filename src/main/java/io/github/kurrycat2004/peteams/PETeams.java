@@ -37,11 +37,22 @@ public class PETeams {
         else LOGGER.debug(msg, args);
     }
 
+    public static void logStackTrace() {
+        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+        StringBuilder sb = new StringBuilder("Stack trace:\n");
+        for (int i = 2; i < stackTrace.length; i++) {
+            sb.append("\tat ")
+                    .append(stackTrace[i])
+                    .append("\n");
+        }
+        debugLog(sb.toString());
+    }
+
     @EventHandler
     public void init(FMLInitializationEvent event) {
         PETeams.LOGGER.info("init");
 
-        PETeams.debugLog("registering server side event busses");
+        PETeams.debugLog("registering server side event handler");
         MinecraftForge.EVENT_BUS.register(new Event());
     }
 }
