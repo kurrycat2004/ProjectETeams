@@ -20,6 +20,10 @@ Your personal EMC will not get lost, it will simply use the team EMC while in a 
 Team EMC starts at 0, no EMC will be transferred between members and the team. <br>
 If you wish to transfer your EMC to the team network after adding this mod, take it out of your own network before joining a team, and then add it to the team network after joining.
 
+#### Using
+
+To enable the mod open the team settings via `/team settings` and scroll down to ProjectETeams and enable Share EMC and Share Knowledge
+
 -----
 
 ### Cleanroom
