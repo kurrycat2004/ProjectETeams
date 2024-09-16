@@ -1,7 +1,6 @@
 package io.github.kurrycat2004.peteams.mixin.projectex;
 
 import com.latmod.mods.projectex.integration.OfflineKnowledgeProvider;
-import io.github.kurrycat2004.peteams.PETeams;
 import io.github.kurrycat2004.peteams.provider.impls.TeamImpl;
 import net.minecraft.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
@@ -72,7 +71,6 @@ public abstract class OfflineKnowledgeProviderMixin {
 
     @Inject(method = "getEmc", at = @At("HEAD"), cancellable = true)
     private void injectGetEmc(CallbackInfoReturnable<Long> cir) {
-        PETeams.debugLog("OfflineKnowledgeProviderMixin#getEmc");
         if (peteams$teamImpl.isShareEmc()) cir.setReturnValue(peteams$teamImpl.getEmc());
     }
 

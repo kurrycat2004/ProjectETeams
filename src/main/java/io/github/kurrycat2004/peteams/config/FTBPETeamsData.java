@@ -10,7 +10,6 @@ import io.github.kurrycat2004.peteams.data.Team;
 import io.github.kurrycat2004.peteams.data.TeamSavedData;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.jetbrains.annotations.NotNull;
@@ -53,7 +52,7 @@ public class FTBPETeamsData extends TeamData {
     private void setShareEmc(boolean shareEmc) {
         boolean shouldSync = this.shareEmc != shareEmc;
         this.shareEmc = shareEmc;
-        if (shouldSync) getTeam().markDirtyAndSendSyncAll(null);
+        if (shouldSync) getTeam().pushEmcSyncAll();
     }
 
     private void setShareKnowledge(boolean shareKnowledge) {

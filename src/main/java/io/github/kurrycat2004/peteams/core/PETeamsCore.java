@@ -5,7 +5,7 @@ import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 import org.jetbrains.annotations.Nullable;
 import zone.rong.mixinbooter.IEarlyMixinLoader;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -14,18 +14,13 @@ import java.util.Map;
 public class PETeamsCore implements IFMLLoadingPlugin, IEarlyMixinLoader {
     @Override
     public List<String> getMixinConfigs() {
-        //noinspection ArraysAsListWithZeroOrOneArgument
-        return Arrays.asList("mixins.forge.early.json");
+        return Collections.emptyList();
     }
 
     @Override
     public boolean shouldMixinConfigQueue(String mixinConfig) {
-        return switch (mixinConfig) {
-            case "mixins.forge.early.json" -> true;
-            default -> false;
-        };
+        return false;
     }
-
 
     @Override
     public String[] getASMTransformerClass() {return new String[0];}

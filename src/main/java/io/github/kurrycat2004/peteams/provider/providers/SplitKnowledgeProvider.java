@@ -99,11 +99,11 @@ public class SplitKnowledgeProvider implements IKnowledgeProvider, ICapabilitySe
     @Override
     public void sync(@NotNull EntityPlayerMP player) {
         boolean shareKnowledge = this.teamImpl.isShareKnowledge();
-        ProviderUtil.sendSync(player, this, shareKnowledge);
+        ProviderUtil.sendKnowledgeSync(player, this, shareKnowledge);
     }
 
     public void syncMemberLeft(@NotNull EntityPlayerMP player) {
-        ProviderUtil.sendSync(player, this.defaultImpl, true);
+        ProviderUtil.sendKnowledgeSync(player, this.defaultImpl, true);
     }
 
     public void pullKnowledgeFromTeam() {
@@ -112,17 +112,24 @@ public class SplitKnowledgeProvider implements IKnowledgeProvider, ICapabilitySe
         this.defaultImpl.pullKnowledgeFrom(this.teamImpl);
     }
 
-    public void sendSync(EntityPlayerMP player) {
+    public void sendKnowledgeSync(EntityPlayerMP player) {
         Team team = this.teamImpl.getTeam();
         if (team == null) return;
-        ProviderUtil.sendSync(player, this, true);
+        ProviderUtil.sendKnowledgeSync(player, this, true);
+    }
+
+    public void sendEmcSync(EntityPlayerMP player) {
+        Team team = this.teamImpl.getTeam();
+        if (team == null) return;
+        ProviderUtil.sendEmcSync(player, this);
     }
 
     public void syncMemberJoin() {
         Team team = this.teamImpl.getTeam();
         if (team == null) return;
         if (team.isShareKnowledge()) this.teamImpl.pullKnowledgeFrom(this.defaultImpl);
-        team.markDirtyAndSendSyncAll(null);
+        team.markKnowledgeDirty(null);
+        team.pushKnowledgeSyncAll();
     }
 
     public void pushKnowledgeToTeam() {

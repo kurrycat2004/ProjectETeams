@@ -15,6 +15,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -46,6 +47,10 @@ public class TeamSavedData extends WorldSavedData {
             instance = (TeamSavedData) data;
         }
         return instance;
+    }
+
+    public static Collection<Team> getTeams() {
+        return TeamSavedData.getInstance().teams.values();
     }
 
     /**
@@ -88,7 +93,7 @@ public class TeamSavedData extends WorldSavedData {
     public void readFromNBT(NBTTagCompound nbt) {
         for (NBTBase tag : nbt.getTagList("teams", Constants.NBT.TAG_COMPOUND)) {
             NBTTagCompound teamTag = (NBTTagCompound) tag;
-            String teamUuid = teamTag.getString("uuid");
+            String teamUuid = teamTag.getString(Team.TAG_UUID);
 
             if (!teams.containsKey(teamUuid)) teams.put(teamUuid, new Team());
             teams.get(teamUuid).readFromNBT(teamTag.getCompoundTag("team"));
@@ -100,7 +105,7 @@ public class TeamSavedData extends WorldSavedData {
         NBTTagList teamTagList = new NBTTagList();
         teams.forEach((uuid, team) -> {
             NBTTagCompound teamTag = new NBTTagCompound();
-            teamTag.setString("uuid", uuid);
+            teamTag.setString(Team.TAG_UUID, uuid);
             teamTag.setTag("team", team.writeToNBT(new NBTTagCompound()));
             teamTagList.appendTag(teamTag);
         });

@@ -23,11 +23,32 @@ import java.util.List;
 import java.util.UUID;
 
 public class Team extends WorldSavedData {
+    public static final String TAG_UUID = "uuid";
+    public static final String TAG_EMC = "emc";
+    public static final String TAG_KNOWLEDGE = "knowledge";
+    public static final String TAG_FULL_KNOWLEDGE = "fullknowledge";
+
     private String uuid;
     private long emc = 0;
     private final List<ItemStack> knowledge = new ArrayList<>();
     private final List<ItemStack> view = Collections.unmodifiableList(knowledge);
     private boolean fullKnowledge = false;
+
+    /**
+     * whether emc should be synced with members
+     */
+    private boolean dirtyEmc = false;
+    /**
+     * whether knowledge should be synced with members
+     */
+    private boolean dirtyKnowledge = false;
+    /**
+     * the player that caused dirty knowledge <br>
+     * <code>null</code> if no player / multiple players caused it <br>
+     * can be skipped in next sync packet if set <br>
+     */
+    @Nullable
+    private UUID dirtyKnowledgePlayerUUID = null;
 
     public Team() {
         super("team");
@@ -64,37 +85,46 @@ public class Team extends WorldSavedData {
 
     public void clearKnowledge(@Nullable UUID playerUUID) {
         knowledge.clear();
-        markDirty();
-        pushSyncAll(playerUUID);
+        markKnowledgeDirty(playerUUID);
     }
 
     public boolean removeKnowledge(@Nullable UUID playerUUID, ItemStack stack) {
         boolean removed = knowledge.removeIf(s -> ItemHelper.basicAreStacksEqual(stack, s));
-        markDirty();
-        pushSyncAll(playerUUID);
+        markKnowledgeDirty(playerUUID);
         return removed;
     }
 
-    public void markDirtyAndSendSyncAll(@Nullable UUID playerUUID) {
-        markDirty();
-        pushSyncAll(playerUUID);
+    public void syncPending() {
+        if (dirtyKnowledge) pushKnowledgeSyncAll();
+        else if (dirtyEmc) pushEmcSyncAll();
     }
 
-    private void pushSyncAll(@Nullable UUID playerUUID) {
-        ForgeTeam forgeTeam = this.getTeam();
-        forgeTeam.getOnlineMembers().forEach(player -> {
-            if (player.getUniqueID().equals(playerUUID)) return;
+    public void pushEmcSyncAll() {
+        this.getTeam().getOnlineMembers().forEach(player -> {
+            SplitKnowledgeProvider capability = (SplitKnowledgeProvider) player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null);
+            if (capability == null) return;
+
+            capability.sendEmcSync(player);
+        });
+        this.dirtyEmc = false;
+    }
+
+    public void pushKnowledgeSyncAll() {
+        this.getTeam().getOnlineMembers().forEach(player -> {
+            if (player.getUniqueID().equals(dirtyKnowledgePlayerUUID)) return;
             SplitKnowledgeProvider capability = (SplitKnowledgeProvider) player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null);
             if (capability == null) return;
 
             capability.pullKnowledgeFromTeam();
-            capability.sendSync(player);
+            capability.sendKnowledgeSync(player);
         });
+        this.dirtyEmc = false;
+        this.dirtyKnowledge = false;
+        this.dirtyKnowledgePlayerUUID = null;
     }
 
-    private void pullKnowledgeAll() {
-        ForgeTeam forgeTeam = this.getTeam();
-        forgeTeam.getOnlineMembers().forEach(player -> {
+    private void pullKnowledgeFromMembers() {
+        this.getTeam().getOnlineMembers().forEach(player -> {
             SplitKnowledgeProvider capability = (SplitKnowledgeProvider) player.getCapability(ProjectEAPI.KNOWLEDGE_CAPABILITY, null);
             if (capability == null) return;
 
@@ -103,9 +133,10 @@ public class Team extends WorldSavedData {
     }
 
     public void shareKnowledgeChangedSync() {
-        markDirty();
-        pullKnowledgeAll();
-        pushSyncAll(null);
+        pullKnowledgeFromMembers();
+        markKnowledgeDirty(null);
+
+        pushKnowledgeSyncAll();
     }
 
     public void pruneDuplicateKnowledge() {
@@ -118,8 +149,7 @@ public class Team extends WorldSavedData {
 
     public void addKnowledge(@Nullable UUID playerUUID, ItemStack stack) {
         knowledge.add(stack);
-        markDirty();
-        pushSyncAll(playerUUID);
+        markKnowledgeDirty(playerUUID);
     }
 
     public void addKnowledgeRaw(ItemStack stack) {
@@ -132,8 +162,7 @@ public class Team extends WorldSavedData {
 
     public void setEmc(@Nullable UUID playerUUID, long emc) {
         this.emc = emc;
-        markDirty();
-        pushSyncAll(playerUUID);
+        markEmcDirty(playerUUID);
     }
 
     public void setEmcRaw(long emc) {
@@ -142,8 +171,7 @@ public class Team extends WorldSavedData {
 
     public void setFullKnowledge(@Nullable UUID playerUUID, boolean fullKnowledge) {
         this.fullKnowledge = fullKnowledge;
-        markDirty();
-        pushSyncAll(playerUUID);
+        markKnowledgeDirty(playerUUID);
     }
 
     public void setFullKnowledgeRaw(boolean fullKnowledge) {
@@ -152,17 +180,17 @@ public class Team extends WorldSavedData {
 
     @Override
     public void readFromNBT(NBTTagCompound nbt) {
-        this.uuid = nbt.getString("uuid");
-        this.emc = nbt.getLong("emc");
+        this.uuid = nbt.getString(TAG_UUID);
+        this.emc = nbt.getLong(TAG_EMC);
 
-        NBTTagList list = nbt.getTagList("knowledge", Constants.NBT.TAG_COMPOUND);
+        NBTTagList list = nbt.getTagList(TAG_KNOWLEDGE, Constants.NBT.TAG_COMPOUND);
         for (int i = 0; i < list.tagCount(); i++) {
             ItemStack item = new ItemStack(list.getCompoundTagAt(i));
             if (!item.isEmpty()) knowledge.add(item);
         }
         pruneStaleKnowledge();
         pruneDuplicateKnowledge();
-        fullKnowledge = nbt.getBoolean("fullknowledge");
+        fullKnowledge = nbt.getBoolean(TAG_FULL_KNOWLEDGE);
     }
 
     @Override
@@ -171,8 +199,8 @@ public class Team extends WorldSavedData {
             PETeams.LOGGER.warn("Tried to save invalid team: missing uuid");
             return compound;
         }
-        compound.setString("uuid", uuid);
-        compound.setLong("emc", emc);
+        compound.setString(TAG_UUID, uuid);
+        compound.setLong(TAG_EMC, emc);
 
         NBTTagList knowledgeWrite = new NBTTagList();
         for (ItemStack i : knowledge) {
@@ -180,8 +208,8 @@ public class Team extends WorldSavedData {
             knowledgeWrite.appendTag(tag);
         }
 
-        compound.setTag("knowledge", knowledgeWrite);
-        compound.setBoolean("fullknowledge", fullKnowledge);
+        compound.setTag(TAG_KNOWLEDGE, knowledgeWrite);
+        compound.setBoolean(TAG_FULL_KNOWLEDGE, fullKnowledge);
         return compound;
     }
 
@@ -189,6 +217,21 @@ public class Team extends WorldSavedData {
     public void markDirty() {
         super.markDirty();
         TeamSavedData.getInstance().markDirty();
+    }
+
+    public void markEmcDirty(@Nullable UUID dirtyPlayerUUID) {
+        dirtyEmc = true;
+        markDirty();
+    }
+
+    public void markKnowledgeDirty(@Nullable UUID dirtyPlayerUUID) {
+        if (!dirtyKnowledge && dirtyKnowledgePlayerUUID == null)
+            dirtyKnowledgePlayerUUID = dirtyPlayerUUID;
+        else if (dirtyKnowledgePlayerUUID != dirtyPlayerUUID)
+            dirtyKnowledgePlayerUUID = null;
+
+        dirtyKnowledge = true;
+        markDirty();
     }
 
     public boolean isShareEmc() {

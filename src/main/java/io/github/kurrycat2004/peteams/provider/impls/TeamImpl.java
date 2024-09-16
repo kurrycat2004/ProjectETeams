@@ -112,15 +112,12 @@ public class TeamImpl implements ITeamKnowledgeHolder {
             changed = true;
         }
 
-        if (team.hasFullKnowledge()) {
-            team.markDirtyAndSendSyncAll(playerUUIDSupplier.get());
-            return false;
-        }
+        if (team.hasFullKnowledge()) return false;
 
         boolean removed = team.getKnowledgeMut().removeIf(s -> ItemHelper.basicAreStacksEqual(stack, s));
 
         if (changed || removed) {
-            team.markDirtyAndSendSyncAll(playerUUIDSupplier.get());
+            team.markKnowledgeDirty(playerUUIDSupplier.get());
             this.fireChangedEvent();
         }
         return removed || changed;
@@ -153,7 +150,7 @@ public class TeamImpl implements ITeamKnowledgeHolder {
     @Override
     public void sync(@NotNull EntityPlayerMP player) {
         PETeams.debugLog("Warning: sync called on a TeamImpl, this will work as expected, but should not happen");
-        ProviderUtil.sendSync(player, this, true);
+        ProviderUtil.sendKnowledgeSync(player, this, true);
     }
 
     @Override

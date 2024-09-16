@@ -22,7 +22,7 @@ import java.util.List;
 
 public class DefaultImpl implements IKnowledgeHolder {
     private final EntityPlayer player;
-    private IItemHandlerModifiable inputLocks = null;
+    protected IItemHandlerModifiable inputLocks = null;
     private final List<ItemStack> knowledge = new ArrayList<>();
     private final List<ItemStack> view = Collections.unmodifiableList(knowledge);
     private long emc = 0;
@@ -123,7 +123,7 @@ public class DefaultImpl implements IKnowledgeHolder {
 
     @Override
     public void sync(@NotNull EntityPlayerMP player) {
-        ProviderUtil.sendSync(player, this, false);
+        ProviderUtil.sendKnowledgeSync(player, this, false);
     }
 
     @Override

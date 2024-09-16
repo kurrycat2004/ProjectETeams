@@ -1,6 +1,7 @@
 package io.github.kurrycat2004.peteams;
 
 import io.github.kurrycat2004.peteams.event.Event;
+import io.github.kurrycat2004.peteams.net.PETPacketHandler;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
@@ -30,6 +31,8 @@ public class PETeams {
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         DEV_ENV = ((Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment"));
+
+        PETPacketHandler.register();
     }
 
     public static void debugLog(String msg, Object... args) {

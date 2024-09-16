@@ -1,9 +1,0 @@
-{
-  "package": "io.github.kurrycat2004.peteams.mixin",
-  "refmap": "peteams.refmap.json",
-  "minVersion": "0.8",
-  "compatibilityLevel": "JAVA_8",
-  "mixins": [
-    "forge.AttachCapabilitiesEventMixin"
-  ]
-}
