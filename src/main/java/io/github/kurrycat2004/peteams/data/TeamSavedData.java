@@ -53,6 +53,20 @@ public class TeamSavedData extends WorldSavedData {
         return TeamSavedData.getInstance().teams.values();
     }
 
+    @Nullable
+    public static Team getCommonTeam(@NotNull UUID playerUUID, @NotNull UUID otherPlayerUUID) {
+        if (!Universe.loaded()) return null;
+        ForgePlayer forgePlayer = Universe.get().getPlayer(playerUUID);
+        if (forgePlayer == null || !forgePlayer.hasTeam()) return null;
+        ForgePlayer otherForgePlayer = Universe.get().getPlayer(otherPlayerUUID);
+        if (otherForgePlayer == null || !otherForgePlayer.hasTeam()) return null;
+
+        if (forgePlayer.team.equalsTeam(otherForgePlayer.team)) {
+            return getTeam(forgePlayer.team.getUIDCode());
+        }
+        return null;
+    }
+
     /**
      * This <strong>always</strong> returns a Team instance. If the team does not exist, it will be created.
      *

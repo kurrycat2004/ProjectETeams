@@ -1,7 +1,9 @@
 package io.github.kurrycat2004.peteams.util;
 
-import com.feed_the_beast.ftblib.lib.data.ForgePlayer;
-import com.feed_the_beast.ftblib.lib.data.Universe;
+import io.github.kurrycat2004.peteams.Tags;
+import io.github.kurrycat2004.peteams.config.FTBPETeamsData;
+import io.github.kurrycat2004.peteams.data.Team;
+import io.github.kurrycat2004.peteams.data.TeamSavedData;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,9 +17,10 @@ public class MixinUtil {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) return true;
 
         if (playerUUID.equals(ownerUUID)) return true;
-        if (!Universe.loaded()) return false;
-        ForgePlayer forgeOwner = Universe.get().getPlayer((UUID) ownerUUID);
-        if (forgeOwner == null || !forgeOwner.hasTeam()) return false;
-        return forgeOwner.team.getOnlineMembers().stream().anyMatch(member -> member.getUniqueID().equals(playerUUID));
+        Team commonTeam = TeamSavedData.getCommonTeam(playerUUID, (UUID) ownerUUID);
+        if (commonTeam == null) return false;
+
+        FTBPETeamsData teamData = commonTeam.getTeam().getData().get(Tags.MODID);
+        return teamData.isShareEmc() && teamData.isShareKnowledge();
     }
 }
