@@ -22,6 +22,13 @@ If you wish to transfer your EMC to the team network after adding this mod, take
 
 -----
 
+### Using the mod
+To share EMC and/or Knowledge, join the same FTB Team and enable what you want to share in the team's settings. <br>
+To open FTB Team settings, either use `/team settings` or click the settings button your team's GUI, which can be opened using the FTB Teams button on the top left of your inventory. <br>
+The settings for sharing EMC and/or Knowledge will be in their own settings section named `ProjectETeams`, and can be changed anytime without requiring a restart.
+
+-----
+
 ### Cleanroom
 [Cleanroom](https://github.com/CleanroomMC/Cleanroom) is supported, but not tested as much as normal Forge. If you encounter any bugs, please open an issue. <br>
 Cleanroom has mixinbooter included automatically, so with it, it's not required. <br>
