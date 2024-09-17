@@ -1,6 +1,7 @@
 package io.github.kurrycat2004.peteams.config;
 
 import com.feed_the_beast.ftblib.events.team.ForgeTeamConfigEvent;
+import com.feed_the_beast.ftblib.events.team.ForgeTeamCreatedEvent;
 import com.feed_the_beast.ftblib.events.team.ForgeTeamDataEvent;
 import com.feed_the_beast.ftblib.lib.config.ConfigGroup;
 import com.feed_the_beast.ftblib.lib.data.ForgeTeam;
@@ -25,13 +26,21 @@ public class FTBPETeamsData extends TeamData {
     }
 
     @SubscribeEvent
-    public static void registerTeamData(@NotNull ForgeTeamDataEvent event) {
+    public static void onRegisterTeamData(@NotNull ForgeTeamDataEvent event) {
         event.register(new FTBPETeamsData(event.getTeam()));
     }
 
     @SubscribeEvent
-    public static void getTeamSettings(@NotNull ForgeTeamConfigEvent event) {
+    public static void onTeamConfig(@NotNull ForgeTeamConfigEvent event) {
         getData(event.getTeam()).addConfig(event.getConfig());
+    }
+
+    // For whatever reason, the default value on ConfigGroup.addBool is purely decorative for the tooltip and doesn't actually set the value
+    @SubscribeEvent
+    public static void onTeamCreated(@NotNull ForgeTeamCreatedEvent event) {
+        ForgeTeam team = event.getTeam();
+        getData(team).setShareEmc(PETeamsConfig.DEFAULT_BEHAVIOUR.defaultShareEmc);
+        getData(team).setShareKnowledge(PETeamsConfig.DEFAULT_BEHAVIOUR.defaultShareKnowledge);
     }
 
     private boolean shareEmc = false;
@@ -41,8 +50,10 @@ public class FTBPETeamsData extends TeamData {
         ConfigGroup group = main.getGroup(Tags.MODID);
         group.setDisplayName(new TextComponentString(Tags.MODNAME));
 
-        group.addBool("share_emc", () -> shareEmc, this::setShareEmc, false);
-        group.addBool("share_knowledge", () -> shareKnowledge, this::setShareKnowledge, false);
+        group.addBool("share_emc", () -> shareEmc,
+                this::setShareEmc, PETeamsConfig.DEFAULT_BEHAVIOUR.defaultShareEmc);
+        group.addBool("share_knowledge", () -> shareKnowledge,
+                this::setShareKnowledge, PETeamsConfig.DEFAULT_BEHAVIOUR.defaultShareKnowledge);
     }
 
     private @NotNull Team getTeam() {

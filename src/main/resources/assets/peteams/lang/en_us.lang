@@ -2,7 +2,19 @@
 team_config.peteams.share_emc=Share EMC
 team_config.peteams.share_emc.tooltip=Use one EMC network for all team members
 team_config.peteams.share_knowledge=Share Knowledge
-team_config.peteams.share_knowledge.tooltip=Use one knowledge database for all team members. ENABLING THIS WILL SYNC ALL KNOWLEDGE DATA WITHIN THE TEAM.
+team_config.peteams.share_knowledge.tooltip=Use one knowledge database for all team members. ENABLING THIS WILL IMMEDIATELY SYNC ALL KNOWLEDGE DATA WITHIN THE TEAM.
 
+
+# Block Link
 peteams.block_link.gui_fail.share_disabled=Enable shareEmc and shareKnowledge in FTB Team settings to access this block
 peteams.block_link.gui_fail.different_team=Join the FTB Team of the owner of this block to access this block
+
+
+# Config
+peteams.config.default_behaviour.title=Default Behaviour
+peteams.config.default_behaviour.title.tooltip=This can only be changed in the GUI on integrated servers.\nChange in the config file for dedicated servers.
+
+peteams.config.default_behaviour.default_share_emc=Default Share Emc
+peteams.config.default_behaviour.default_share_emc.tooltip=Default value for shareEmc when creating a team
+peteams.config.default_behaviour.default_share_knowledge=Default Share Knowledge
+peteams.config.default_behaviour.default_share_knowledge.tooltip=Default value for shareKnowledge when creating a team
