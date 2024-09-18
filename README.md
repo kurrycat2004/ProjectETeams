@@ -6,6 +6,7 @@
 
 ### **1.12.2 only**
 ### Dependencies: 
+- [MixinBooter](https://www.curseforge.com/minecraft/mc-mods/mixin-booter)
 - [FTBLib](https://www.curseforge.com/minecraft/mc-mods/ftb-library-legacy-forge)
 - [ProjectE](https://www.curseforge.com/minecraft/mc-mods/projecte)
 ### Also supports:
