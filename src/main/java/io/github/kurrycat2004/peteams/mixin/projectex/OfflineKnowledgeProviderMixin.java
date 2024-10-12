@@ -1,10 +1,12 @@
 package io.github.kurrycat2004.peteams.mixin.projectex;
 
 import com.latmod.mods.projectex.integration.OfflineKnowledgeProvider;
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import com.llamalad7.mixinextras.sugar.Share;
+import com.llamalad7.mixinextras.sugar.ref.LocalBooleanRef;
 import io.github.kurrycat2004.peteams.provider.impls.TeamImpl;
 import net.minecraft.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -44,24 +46,24 @@ public abstract class OfflineKnowledgeProviderMixin {
         if (peteams$teamImpl.isShareKnowledge()) cir.setReturnValue(peteams$teamImpl.hasKnowledge(stack));
     }
 
-    @Shadow
-    public abstract boolean addKnowledge(ItemStack stack);
-
-    @Inject(method = "addKnowledge", at = @At("HEAD"), cancellable = true)
-    private void injectAddKnowledge(ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
-        boolean added = false;
-        if (peteams$teamImpl.isShareKnowledge()) added = peteams$teamImpl.addKnowledge(stack);
-        cir.setReturnValue(addKnowledge(stack) || added);
+    @Inject(method = "addKnowledge", at = @At("HEAD"))
+    private void injectAddKnowledge(ItemStack stack, CallbackInfoReturnable<Boolean> cir, @Share("teamKnowledgeAdded") LocalBooleanRef teamKnowledgeAdded) {
+        teamKnowledgeAdded.set(peteams$teamImpl.isShareKnowledge() && peteams$teamImpl.addKnowledge(stack));
     }
 
-    @Shadow
-    public abstract boolean removeKnowledge(ItemStack stack);
+    @ModifyReturnValue(method = "addKnowledge", at = @At("RETURN"))
+    private boolean modifyAddKnowledge(boolean original, @Share("teamKnowledgeAdded") LocalBooleanRef teamKnowledgeAdded) {
+        return original || teamKnowledgeAdded.get();
+    }
 
-    @Inject(method = "removeKnowledge", at = @At("HEAD"), cancellable = true)
-    private void injectRemoveKnowledge(ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
-        boolean removed = false;
-        if (peteams$teamImpl.isShareKnowledge()) removed = peteams$teamImpl.removeKnowledge(stack);
-        cir.setReturnValue(removeKnowledge(stack) || removed);
+    @Inject(method = "removeKnowledge", at = @At("HEAD"))
+    private void injectRemoveKnowledge(ItemStack stack, CallbackInfoReturnable<Boolean> cir, @Share("teamKnowledgeRemoved") LocalBooleanRef teamKnowledgeRemoved) {
+        teamKnowledgeRemoved.set(peteams$teamImpl.isShareKnowledge() && peteams$teamImpl.removeKnowledge(stack));
+    }
+
+    @ModifyReturnValue(method = "removeKnowledge", at = @At("RETURN"))
+    private boolean modifyRemoveKnowledge(boolean original, @Share("teamKnowledgeRemoved") LocalBooleanRef teamKnowledgeRemoved) {
+        return original || teamKnowledgeRemoved.get();
     }
 
     @Inject(method = "getKnowledge", at = @At("HEAD"), cancellable = true)
