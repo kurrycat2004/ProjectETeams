@@ -13,6 +13,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
@@ -51,6 +52,7 @@ public class WorldEventListener {
     public static void onAttachCaps(@NotNull AttachCapabilitiesEvent<Entity> event) {
         Object playerObj = event.getObject();
         if (!(playerObj instanceof EntityPlayer player)) return;
+        if (playerObj instanceof FakePlayer) return;
 
         Map<ResourceLocation, ICapabilityProvider> caps = getMutableCaps(event);
 
@@ -61,10 +63,10 @@ public class WorldEventListener {
                     new TeamImpl(player::getUniqueID)
             );
             caps.put(KnowledgeImpl.Provider.NAME, p);
-            PETeams.LOGGER.info("overwrote server-side knowledge capability provider");
+            PETeams.debugLog("overwrote server-side knowledge capability provider for player {} ({})", player.getUniqueID(), player.getClass());
         } else {
             caps.put(KnowledgeImpl.Provider.NAME, new ClientKnowledgeProvider(player));
-            PETeams.LOGGER.info("overwrote client-side knowledge capability provider");
+            PETeams.debugLog("overwrote client-side knowledge capability provider for player {} ({})", player.getUniqueID(), player.getClass());
         }
     }
 
