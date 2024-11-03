@@ -1,6 +1,5 @@
 package io.github.kurrycat2004.peteams.event;
 
-import io.github.kurrycat2004.peteams.PETeams;
 import io.github.kurrycat2004.peteams.Tags;
 import io.github.kurrycat2004.peteams.data.Team;
 import io.github.kurrycat2004.peteams.data.TeamSavedData;
@@ -63,10 +62,8 @@ public class WorldEventListener {
                     new TeamImpl(player::getUniqueID)
             );
             caps.put(KnowledgeImpl.Provider.NAME, p);
-            PETeams.debugLog("overwrote server-side knowledge capability provider for player {} ({})", player.getUniqueID(), player.getClass());
         } else {
             caps.put(KnowledgeImpl.Provider.NAME, new ClientKnowledgeProvider(player));
-            PETeams.debugLog("overwrote client-side knowledge capability provider for player {} ({})", player.getUniqueID(), player.getClass());
         }
     }
 
