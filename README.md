@@ -1,7 +1,3 @@
-> ## ⚠️ **WARNING**
-> 
-> **This project is in an experimental stage. Use at your own risk!**
-
 # ProjectETeams
 
 ### **1.12.2 only**
