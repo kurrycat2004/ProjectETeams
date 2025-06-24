@@ -1,7 +1,6 @@
 package io.github.kurrycat2004.peteams.core;
 
-import io.github.kurrycat2004.peteams.PETeams;
-import net.minecraftforge.fml.common.Loader;
+import io.github.kurrycat2004.peteams.compat.LoadedMods;
 import zone.rong.mixinbooter.ILateMixinLoader;
 
 import java.util.Arrays;
@@ -17,7 +16,7 @@ public class LateMixinLoader implements ILateMixinLoader {
     @Override
     public boolean shouldMixinConfigQueue(String mixinConfig) {
         return switch (mixinConfig) {
-            case "mixins.mods.projectex.json" -> Loader.isModLoaded(PETeams.PROJECT_EX);
+            case "mixins.mods.projectex.json" -> LoadedMods.PROJECT_EX;
             default -> false;
         };
     }

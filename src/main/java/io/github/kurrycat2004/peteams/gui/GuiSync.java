@@ -2,12 +2,11 @@ package io.github.kurrycat2004.peteams.gui;
 
 import com.latmod.mods.projectex.gui.ContainerTableBase;
 import com.latmod.mods.projectex.gui.GuiTableBase;
-import io.github.kurrycat2004.peteams.PETeams;
+import io.github.kurrycat2004.peteams.compat.LoadedMods;
 import moze_intel.projecte.gameObjs.container.TransmutationContainer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.Loader;
 
 public class GuiSync {
     public static void updateClientTransmutation() {
@@ -18,7 +17,7 @@ public class GuiSync {
         if (player.openContainer instanceof TransmutationContainer container) {
             container.transmutationInventory.updateClientTargets();
         }
-        if (Loader.isModLoaded(PETeams.PROJECT_EX)) {
+        if (LoadedMods.PROJECT_EX) {
             if (player.openContainer instanceof ContainerTableBase container) {
                 if (Minecraft.getMinecraft().currentScreen instanceof GuiTableBase gui) {
                     gui.updateValidItemList();

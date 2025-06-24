@@ -25,8 +25,6 @@ public class PETeams {
     public static final Logger LOGGER = LogManager.getLogger(Tags.MODID);
     public static boolean DEV_ENV = false;
 
-    public static final String PROJECT_EX = "projectex";
-
     public static File configFile;
 
     @EventHandler
