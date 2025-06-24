@@ -18,8 +18,6 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
@@ -67,7 +65,6 @@ public class WorldEventListener {
         }
     }
 
-    @SideOnly(Side.SERVER)
     @SubscribeEvent
     public static void onTick(@NotNull TickEvent.ServerTickEvent event) {
         if (event.phase != TickEvent.Phase.END) return;
