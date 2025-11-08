@@ -67,16 +67,17 @@ public class DefaultImpl implements IKnowledgeHolder {
     public boolean addKnowledge(@NotNull ItemStack stack) {
         if (fullKnowledge) return false;
 
-        boolean knowsItem = this.hasKnowledge(stack);
-        boolean isTome = stack.getItem() == ObjHandler.tome;
-        if (knowsItem && isTome) return false;
-
-        if (!knowsItem) {
-            PETeams.debugLog("Adding knowledge {} for {} ({})", stack, this.player.getName(), this.player.getUniqueID());
-            knowledge.add(stack);
+        if (stack.getItem() == ObjHandler.tome) {
+            if (!this.hasKnowledge(stack)) knowledge.add(stack);
+            fullKnowledge = true;
+            fireChangedEvent();
+            return true;
         }
 
-        if (isTome) fullKnowledge = true;
+        if (this.hasKnowledge(stack)) return false;
+
+        PETeams.debugLog("Adding knowledge {} for {} ({})", stack, this.player.getName(), this.player.getUniqueID());
+        knowledge.add(stack);
 
         fireChangedEvent();
         return true;
