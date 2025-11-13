@@ -57,7 +57,7 @@ public class FTBPETeamsData extends TeamData {
     }
 
     private @NotNull Team getTeam() {
-        return TeamSavedData.getTeam(this.team.getUIDCode());
+        return TeamSavedData.getTeam(this.team.getUID());
     }
 
     private void setShareEmc(boolean shareEmc) {

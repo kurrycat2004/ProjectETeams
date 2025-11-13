@@ -23,7 +23,7 @@ import java.util.UUID;
 public class TeamSavedData extends WorldSavedData {
     private static final String ID = Tags.MODID + "_sync_knowledge";
 
-    private final Map<String, Team> teams = new HashMap<>();
+    private final Map<Short, Team> teams = new HashMap<>();
 
     public TeamSavedData(String name) {
         super(name);
@@ -62,7 +62,7 @@ public class TeamSavedData extends WorldSavedData {
         if (otherForgePlayer == null || !otherForgePlayer.hasTeam()) return null;
 
         if (forgePlayer.team.equalsTeam(otherForgePlayer.team)) {
-            return getTeam(forgePlayer.team.getUIDCode());
+            return getTeam(forgePlayer.team.getUID());
         }
         return null;
     }
@@ -73,7 +73,7 @@ public class TeamSavedData extends WorldSavedData {
      * @param uuid Team UUID
      * @return Team instance
      */
-    public static @NotNull Team getTeam(String uuid) {
+    public static @NotNull Team getTeam(short uuid) {
         return TeamSavedData.getInstance().teams.computeIfAbsent(uuid, Team::new);
     }
 
@@ -96,7 +96,7 @@ public class TeamSavedData extends WorldSavedData {
         if (forgePlayer == null) return null;
         if (forgePlayer.team == null || !forgePlayer.hasTeam()) return null;
 
-        return TeamSavedData.getTeam(forgePlayer.team.getUIDCode());
+        return TeamSavedData.getTeam(forgePlayer.team.getUID());
     }
 
     public static @Nullable Team getTeamFromPlayer(EntityPlayer player) {
@@ -107,10 +107,17 @@ public class TeamSavedData extends WorldSavedData {
     public void readFromNBT(NBTTagCompound nbt) {
         for (NBTBase tag : nbt.getTagList("teams", Constants.NBT.TAG_COMPOUND)) {
             NBTTagCompound teamTag = (NBTTagCompound) tag;
-            String teamUuid = teamTag.getString(Team.TAG_UUID);
+            String uuidString = teamTag.getString(Team.TAG_UUID);
+            short uuid;
+            if (uuidString.isEmpty()) {
+                uuid = teamTag.getShort(Team.TAG_UUID);
+            } else {
+                // backwards compat, was String before
+                uuid = Integer.valueOf(uuidString, 16).shortValue();
+            }
 
-            if (!teams.containsKey(teamUuid)) teams.put(teamUuid, new Team());
-            teams.get(teamUuid).readFromNBT(teamTag.getCompoundTag("team"));
+            if (!teams.containsKey(uuid)) teams.put(uuid, new Team());
+            teams.get(uuid).readFromNBT(teamTag.getCompoundTag("team"));
         }
     }
 
@@ -119,7 +126,7 @@ public class TeamSavedData extends WorldSavedData {
         NBTTagList teamTagList = new NBTTagList();
         teams.forEach((uuid, team) -> {
             NBTTagCompound teamTag = new NBTTagCompound();
-            teamTag.setString(Team.TAG_UUID, uuid);
+            teamTag.setShort(Team.TAG_UUID, uuid);
             teamTag.setTag("team", team.writeToNBT(new NBTTagCompound()));
             teamTagList.appendTag(teamTag);
         });

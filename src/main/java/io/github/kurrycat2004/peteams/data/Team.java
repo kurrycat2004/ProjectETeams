@@ -28,7 +28,7 @@ public class Team extends WorldSavedData {
     public static final String TAG_KNOWLEDGE = "knowledge";
     public static final String TAG_FULL_KNOWLEDGE = "fullknowledge";
 
-    private String uuid;
+    private short uuid;
     private long emc = 0;
     private final List<ItemStack> knowledge = new ArrayList<>();
     private final List<ItemStack> view = Collections.unmodifiableList(knowledge);
@@ -54,7 +54,7 @@ public class Team extends WorldSavedData {
         super("team");
     }
 
-    public Team(String uuid) {
+    public Team(short uuid) {
         this();
         this.uuid = uuid;
     }
@@ -156,7 +156,7 @@ public class Team extends WorldSavedData {
         knowledge.add(stack);
     }
 
-    public String getUuid() {
+    public short getUuid() {
         return uuid;
     }
 
@@ -180,7 +180,14 @@ public class Team extends WorldSavedData {
 
     @Override
     public void readFromNBT(NBTTagCompound nbt) {
-        this.uuid = nbt.getString(TAG_UUID);
+        String uuid = nbt.getString(TAG_UUID);
+        if (uuid.isEmpty()) {
+            this.uuid = nbt.getShort(TAG_UUID);
+        } else {
+            // backwards compat, was String before
+            this.uuid = Integer.valueOf(uuid, 16).shortValue();
+        }
+
         this.emc = nbt.getLong(TAG_EMC);
 
         NBTTagList list = nbt.getTagList(TAG_KNOWLEDGE, Constants.NBT.TAG_COMPOUND);
@@ -195,11 +202,7 @@ public class Team extends WorldSavedData {
 
     @Override
     public @NotNull NBTTagCompound writeToNBT(@NotNull NBTTagCompound compound) {
-        if (uuid == null || uuid.isEmpty()) {
-            PETeams.LOGGER.warn("Tried to save invalid team: missing uuid");
-            return compound;
-        }
-        compound.setString(TAG_UUID, uuid);
+        compound.setShort(TAG_UUID, uuid);
         compound.setLong(TAG_EMC, emc);
 
         NBTTagList knowledgeWrite = new NBTTagList();
