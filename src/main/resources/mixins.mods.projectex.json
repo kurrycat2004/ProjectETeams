@@ -1,11 +1,11 @@
 {
-  "package": "io.github.kurrycat2004.peteams.mixin",
+  "package": "io.github.kurrycat2004.peteams.mixin.projectex",
   "refmap": "peteams.refmap.json",
   "minVersion": "0.8",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "projectex.ContainerLinkMixin",
-    "projectex.BlockLinkMixin",
-    "projectex.OfflineKnowledgeProviderMixin"
+    "ContainerLinkMixin",
+    "BlockLinkMixin",
+    "OfflineKnowledgeProviderMixin"
   ]
 }
