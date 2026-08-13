@@ -90,7 +90,7 @@ public class TeamImpl implements ITeamKnowledgeHolder {
 
         boolean knowsItem = this.hasKnowledge(stack);
         boolean isTome = stack.getItem() == ObjHandler.tome;
-        if (knowsItem && isTome) return false;
+        if (knowsItem && !isTome) return false;
 
         if (!knowsItem) {
             PETeams.debugLog("Adding knowledge {} for player {}", stack, playerUUIDSupplier.get());
